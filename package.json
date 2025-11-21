@@ -11,6 +11,9 @@
     "build": "tsc",
     "dev": "tsx src/git-metrics.ts",
     "start": "node build/git-metrics.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "prepublishOnly": "npm run build"
   },
   "files": [
@@ -48,7 +51,9 @@
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
+    "@vitest/coverage-v8": "^4.0.13",
     "tsx": "^4.20.6",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.13"
   }
 }

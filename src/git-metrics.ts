@@ -9,10 +9,19 @@ import { execSync } from "child_process";
 import { existsSync, statSync } from "fs";
 import { resolve } from "path";
 
+function log(level: 'INFO' | 'ERROR' | 'WARN', message: string, meta?: any) {
+  const timestamp = new Date().toISOString();
+  const logEntry = { timestamp, level, message, ...meta };
+  console.error(JSON.stringify(logEntry));
+}
+
+const GIT_TIMEOUT = parseInt(process.env.GIT_TIMEOUT || '30000');
+const MAX_BUFFER = 10 * 1024 * 1024;
+
 const server = new Server(
   {
     name: "git-metrics-mcp-server",
-    version: "1.0.0",
+    version: "1.1.0",
   },
   {
     capabilities: {
@@ -21,7 +30,7 @@ const server = new Server(
   }
 );
 
-function runGitCommand(repoPath: string, command: string): string {
+export function runGitCommand(repoPath: string, command: string): string {
   const fullPath = resolve(repoPath);
   if (!existsSync(fullPath)) {
     throw new Error(`Repository path does not exist: ${fullPath}`);
@@ -30,23 +39,31 @@ function runGitCommand(repoPath: string, command: string): string {
     return execSync(command, { 
       cwd: fullPath, 
       encoding: "utf-8",
-      timeout: 30000,
-      maxBuffer: 10 * 1024 * 1024 // 10MB buffer for large repos
+      timeout: GIT_TIMEOUT,
+      maxBuffer: MAX_BUFFER
     });
   } catch (error: any) {
+    log('ERROR', 'Git command failed', { command, error: error.message });
     throw new Error(`Git command failed: ${error.message}`);
   }
 }
 
-function validateDate(date: string, fieldName: string): void {
+export function sanitizeInput(input: string): string {
+  return input.replace(/[;&|`$()]/g, '');
+}
+
+export function validateDate(date: string, fieldName: string): void {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
     throw new Error(`Invalid ${fieldName} format. Use YYYY-MM-DD (e.g., 2025-11-21)`);
   }
 }
 
-function validateRepoPath(repoPath: string): void {
+export function validateRepoPath(repoPath: string): void {
   if (!repoPath || typeof repoPath !== 'string') {
     throw new Error('repo_path is required and must be a string');
+  }
+  if (/[;&|`$()]/.test(repoPath)) {
+    throw new Error('Invalid characters in repo_path');
   }
   const fullPath = resolve(repoPath);
   if (!existsSync(fullPath)) {
@@ -58,7 +75,7 @@ function validateRepoPath(repoPath: string): void {
   }
 }
 
-function parseCommitData(output: string) {
+export function parseCommitData(output: string) {
   const lines = output.trim().split("\n");
   const commits: any[] = [];
   let current: any = null;
@@ -215,7 +232,13 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
 }));
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  const args = request.params.arguments as any;
+  const startTime = Date.now();
+  const toolName = request.params.name;
+  
+  try {
+    log('INFO', 'Tool invoked', { tool: toolName, args: request.params.arguments });
+    
+    const args = request.params.arguments as any;
 
   if (request.params.name === "get_commit_stats") {
     const { repo_path, since, until, author } = args;
@@ -485,6 +508,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   if (request.params.name === "get_velocity_trends") {
     const { repo_path, since, interval = "week" } = args;
+    
+    validateRepoPath(repo_path);
+    validateDate(since, "since");
+    
     const cmd = `git log --since="${since}" --pretty=format:"%ad|%H" --date=short --numstat`;
     
     const output = runGitCommand(repo_path, cmd);
@@ -502,7 +529,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const periods: Record<string, { commits: number; additions: number; deletions: number }> = {};
 
     for (const commit of commits) {
-      if (!commit.date) continue;
+      if (!commit.date || typeof commit.date !== 'string') continue;
       
       const date = new Date(commit.date);
       if (isNaN(date.getTime())) continue;
@@ -684,16 +711,33 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     };
   }
 
+  log('ERROR', 'Unknown tool', { tool: toolName });
   throw new Error(`Unknown tool: ${request.params.name}`);
+  
+  } catch (error: any) {
+    const duration = Date.now() - startTime;
+    log('ERROR', 'Tool execution failed', { 
+      tool: toolName, 
+      error: error.message, 
+      duration 
+    });
+    throw error;
+  }
 });
 
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("Git Metrics MCP Server running on stdio");
+  log('INFO', 'Git Metrics MCP Server started', { 
+    version: '1.1.0',
+    timeout: GIT_TIMEOUT,
+    maxBuffer: MAX_BUFFER
+  });
 }
 
-main().catch((error) => {
-  console.error("Server error:", error);
-  process.exit(1);
-});
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch((error) => {
+    log('ERROR', 'Server startup failed', { error: error.message });
+    process.exit(1);
+  });
+}

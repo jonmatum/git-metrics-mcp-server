@@ -19,6 +19,15 @@ This server provides tools to extract meaningful metrics from git repositories, 
 - **Quality Metrics**: Commit size, reverts, and fix rates
 - **Technical Debt**: Stale files and complexity hotspots
 
+### Production Features
+
+- **Input Sanitization**: Protection against command injection attacks
+- **Structured Logging**: JSON-formatted logs with timestamps for monitoring
+- **Configurable Timeouts**: Set `GIT_TIMEOUT` env var (default: 30s)
+- **Error Boundaries**: Graceful error handling with detailed logging
+- **CI/CD**: Automated testing on pull requests via GitHub Actions
+
+
 ## Installation
 
 ### From npm (Recommended)
@@ -433,6 +442,22 @@ npm run dev    # Run in development mode
 npm run build  # Build for production
 npm start      # Run built version
 ```
+
+## Testing
+
+```bash
+npm test              # Run tests
+npm run test:watch    # Run tests in watch mode
+npm run test:coverage # Run tests with coverage report
+```
+
+The test suite covers:
+- Date validation
+- Repository path validation
+- Git command execution
+- Commit data parsing
+- Core git operations (stats, metrics, churn, velocity)
+
 
 ## License
 
