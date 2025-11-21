@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v1.0.1...v1.1.0) (2025-11-21)
+
+
+### Features
+
+* add production-ready error handling and validation ([ced4223](https://github.com/jonmatum/git-metrics-mcp-server/commit/ced422312490bd739e8e99b6b984731f8b6978ea))
+
 ## [1.0.1](https://github.com/jonmatum/git-metrics-mcp-server/compare/v1.0.0...v1.0.1) (2025-11-21)
 
 
