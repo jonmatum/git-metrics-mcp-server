@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v1.1.0...v1.2.0) (2025-11-21)
+
+
+### Features
+
+* add production-ready features and comprehensive test coverage ([e08d338](https://github.com/jonmatum/git-metrics-mcp-server/commit/e08d3385ddf0dd2238b26773bc5cd6fc4dfa07ea))
+
 ## [1.1.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v1.0.1...v1.1.0) (2025-11-21)
 
 
