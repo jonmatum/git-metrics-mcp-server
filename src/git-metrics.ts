@@ -26,7 +26,36 @@ function runGitCommand(repoPath: string, command: string): string {
   if (!existsSync(fullPath)) {
     throw new Error(`Repository path does not exist: ${fullPath}`);
   }
-  return execSync(command, { cwd: fullPath, encoding: "utf-8" });
+  try {
+    return execSync(command, { 
+      cwd: fullPath, 
+      encoding: "utf-8",
+      timeout: 30000,
+      maxBuffer: 10 * 1024 * 1024 // 10MB buffer for large repos
+    });
+  } catch (error: any) {
+    throw new Error(`Git command failed: ${error.message}`);
+  }
+}
+
+function validateDate(date: string, fieldName: string): void {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    throw new Error(`Invalid ${fieldName} format. Use YYYY-MM-DD (e.g., 2025-11-21)`);
+  }
+}
+
+function validateRepoPath(repoPath: string): void {
+  if (!repoPath || typeof repoPath !== 'string') {
+    throw new Error('repo_path is required and must be a string');
+  }
+  const fullPath = resolve(repoPath);
+  if (!existsSync(fullPath)) {
+    throw new Error(`Repository path does not exist: ${fullPath}`);
+  }
+  const gitPath = resolve(fullPath, '.git');
+  if (!existsSync(gitPath)) {
+    throw new Error(`Not a git repository: ${fullPath}`);
+  }
 }
 
 function parseCommitData(output: string) {
@@ -190,13 +219,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   if (request.params.name === "get_commit_stats") {
     const { repo_path, since, until, author } = args;
+    
+    validateRepoPath(repo_path);
+    validateDate(since, "since");
+    if (until) validateDate(until, "until");
+    
     let cmd = `git log --since="${since}"`;
     if (until) cmd += ` --until="${until}"`;
     if (author) cmd += ` --author="${author}"`;
     cmd += ` --pretty=format:"%H|%an|%ae|%ad|%s" --date=short --numstat`;
 
     const output = runGitCommand(repo_path, cmd);
-    const lines = output.trim().split("\n");
+    const lines = output.trim().split("\n").slice(0, 10000); // Limit to 10k lines
     
     let commits = 0, additions = 0, deletions = 0, filesChanged = 0;
     
@@ -226,12 +260,17 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   if (request.params.name === "get_author_metrics") {
     const { repo_path, since, until } = args;
+    
+    validateRepoPath(repo_path);
+    validateDate(since, "since");
+    if (until) validateDate(until, "until");
+    
     let cmd = `git log --since="${since}"`;
     if (until) cmd += ` --until="${until}"`;
     cmd += ` --pretty=format:"%an|%ae" --numstat`;
 
     const output = runGitCommand(repo_path, cmd);
-    const lines = output.trim().split("\n");
+    const lines = output.trim().split("\n").slice(0, 10000);
     
     const authorStats: Record<string, { commits: number; additions: number; deletions: number; files: number }> = {};
     let currentAuthor = "";
@@ -259,10 +298,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   if (request.params.name === "get_file_churn") {
     const { repo_path, since, limit = 10 } = args;
+    
+    validateRepoPath(repo_path);
+    validateDate(since, "since");
+    
     const cmd = `git log --since="${since}" --name-only --pretty=format:`;
     
     const output = runGitCommand(repo_path, cmd);
-    const files = output.trim().split("\n").filter(f => f);
+    const files = output.trim().split("\n").filter(f => f).slice(0, 10000);
     
     const fileCount: Record<string, number> = {};
     for (const file of files) {
@@ -271,7 +314,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
     const sorted = Object.entries(fileCount)
       .sort(([, a], [, b]) => b - a)
-      .slice(0, limit)
+      .slice(0, Math.min(limit, 100)) // Max 100 files
       .map(([file, changes]) => ({ file, changes }));
 
     return {
@@ -282,12 +325,16 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   if (request.params.name === "get_team_summary") {
     const { repo_path, since, until } = args;
     
+    validateRepoPath(repo_path);
+    validateDate(since, "since");
+    if (until) validateDate(until, "until");
+    
     let statsCmd = `git log --since="${since}"`;
     if (until) statsCmd += ` --until="${until}"`;
     statsCmd += ` --pretty=format:"%an|%ae" --numstat`;
 
     const output = runGitCommand(repo_path, statsCmd);
-    const lines = output.trim().split("\n");
+    const lines = output.trim().split("\n").slice(0, 10000);
     
     const authorStats: Record<string, any> = {};
     let currentAuthor = "";
@@ -331,12 +378,17 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   if (request.params.name === "get_commit_patterns") {
     const { repo_path, since, until } = args;
+    
+    validateRepoPath(repo_path);
+    validateDate(since, "since");
+    if (until) validateDate(until, "until");
+    
     let cmd = `git log --since="${since}"`;
     if (until) cmd += ` --until="${until}"`;
     cmd += ` --pretty=format:"%ad" --date=format:"%u|%H"`;
 
     const output = runGitCommand(repo_path, cmd);
-    const lines = output.trim().split("\n");
+    const lines = output.trim().split("\n").slice(0, 10000);
 
     const byDay: Record<string, number> = { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 0 };
     const byHour: Record<string, number> = {};
@@ -374,10 +426,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   if (request.params.name === "get_code_ownership") {
     const { repo_path, since } = args;
+    
+    validateRepoPath(repo_path);
+    validateDate(since, "since");
+    
     const cmd = `git log --since="${since}" --pretty=format:"%an|%ae" --name-only`;
     
     const output = runGitCommand(repo_path, cmd);
-    const lines = output.trim().split("\n");
+    const lines = output.trim().split("\n").slice(0, 10000);
     
     const fileAuthors: Record<string, Set<string>> = {};
     let currentAuthor = "";
