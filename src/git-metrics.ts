@@ -37,10 +37,15 @@ function parseCommitData(output: string) {
   for (const line of lines) {
     if (line.includes("|")) {
       if (current) commits.push(current);
-      const [hash, author, email, date, message] = line.split("|");
-      current = { hash, author, email, date, message, files: [] };
+      const parts = line.split("|");
+      const date = parts[0];
+      const hash = parts[1] || "";
+      current = { hash, date, files: [] };
     } else if (line.match(/^\d+\s+\d+/) && current) {
-      const [add, del, file] = line.split(/\s+/);
+      const parts = line.split(/\s+/);
+      const add = parts[0];
+      const del = parts[1];
+      const file = parts.slice(2).join(" ");
       current.files.push({ file, additions: parseInt(add) || 0, deletions: parseInt(del) || 0 });
     }
   }
@@ -427,12 +432,25 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const cmd = `git log --since="${since}" --pretty=format:"%ad|%H" --date=short --numstat`;
     
     const output = runGitCommand(repo_path, cmd);
+    if (!output.trim()) {
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify({ interval, trends: [], message: "No commits found in this period" }, null, 2),
+        }],
+      };
+    }
+
     const commits = parseCommitData(output);
 
     const periods: Record<string, { commits: number; additions: number; deletions: number }> = {};
 
     for (const commit of commits) {
+      if (!commit.date) continue;
+      
       const date = new Date(commit.date);
+      if (isNaN(date.getTime())) continue;
+      
       let periodKey: string;
       
       if (interval === "week") {
