@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v1.2.2...v2.0.0) (2025-11-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* Internal architecture refactored for better testability. All public APIs remain unchanged and fully backward compatible.
+
+### Features
+
+* improve test coverage to 80%+ with refactored architecture ([96d7e49](https://github.com/jonmatum/git-metrics-mcp-server/commit/96d7e490067600a4d6eccf8ba3c4678c224c7151))
+
 ## [1.2.2](https://github.com/jonmatum/git-metrics-mcp-server/compare/v1.2.1...v1.2.2) (2025-11-22)
 
 
