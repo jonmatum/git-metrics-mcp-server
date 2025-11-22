@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/jonmatum/git-metrics-mcp-server/compare/v1.2.1...v1.2.2) (2025-11-22)
+
+
+### Bug Fixes
+
+* handle pipe characters in commit messages ([d0701fd](https://github.com/jonmatum/git-metrics-mcp-server/commit/d0701fdbd617f978725697d6e4c0f2db2b83b95c))
+
 ## [1.2.1](https://github.com/jonmatum/git-metrics-mcp-server/compare/v1.2.0...v1.2.1) (2025-11-22)
 
 
