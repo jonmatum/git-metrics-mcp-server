@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/jonmatum/git-metrics-mcp-server/compare/v1.2.0...v1.2.1) (2025-11-22)
+
+
+### Bug Fixes
+
+* extract commit message in parseCommitData to prevent undefined error ([a53c07e](https://github.com/jonmatum/git-metrics-mcp-server/commit/a53c07e0593391a5bd4c191c18ce9f9ee9e5deaf))
+
 ## [1.2.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v1.1.0...v1.2.0) (2025-11-21)
 
 
