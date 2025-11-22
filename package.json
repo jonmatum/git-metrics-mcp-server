@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "postbuild": "chmod +x build/git-metrics.js",
     "dev": "tsx src/git-metrics.ts",
     "start": "node build/git-metrics.js",
     "test": "vitest run",
