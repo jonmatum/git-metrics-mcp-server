@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { validateDate, validateRepoPath, parseCommitData, runGitCommand, sanitizeInput } from './git-metrics.js';
+import { validateDate, validateRepoPath, runGitCommand, sanitizeInput } from './git-metrics.js';
 import { resolve } from 'path';
 import { mkdirSync, rmSync } from 'fs';
 
@@ -79,54 +79,6 @@ describe('runGitCommand', () => {
   });
 });
 
-describe('parseCommitData', () => {
-  it('should parse commit data with files', () => {
-    const output = runGitCommand(
-      REPO,
-      'git log --since="2020-01-01" -5 --pretty=format:"%ad|%H" --date=short --numstat'
-    );
-    const commits = parseCommitData(output);
-    
-    expect(Array.isArray(commits)).toBe(true);
-    if (commits.length > 0) {
-      expect(commits[0]).toHaveProperty('hash');
-      expect(commits[0]).toHaveProperty('date');
-      expect(commits[0]).toHaveProperty('files');
-      expect(Array.isArray(commits[0].files)).toBe(true);
-    }
-  });
-
-  it('should handle empty output', () => {
-    const commits = parseCommitData('');
-    expect(commits).toEqual([]);
-  });
-
-  it('should parse file changes correctly', () => {
-    const sampleOutput = `abc123|John Doe|john@example.com|2025-11-21|Initial commit
-1\t2\tfile1.txt
-3\t4\tfile2.txt
-def456|Jane Doe|jane@example.com|2025-11-20|Fix bug
-5\t6\tfile3.txt`;
-    
-    const commits = parseCommitData(sampleOutput);
-    expect(commits).toHaveLength(2);
-    expect(commits[0].date).toBe('2025-11-21');
-    expect(commits[0].hash).toBe('abc123');
-    expect(commits[0].files).toHaveLength(2);
-    expect(commits[0].files[0]).toEqual({ file: 'file1.txt', additions: 1, deletions: 2 });
-    expect(commits[1].files[0]).toEqual({ file: 'file3.txt', additions: 5, deletions: 6 });
-  });
-
-  it('should handle commits without files', () => {
-    const sampleOutput = `abc123|John Doe|john@example.com|2025-11-21|Initial commit
-def456|Jane Doe|jane@example.com|2025-11-20|Fix bug`;
-    
-    const commits = parseCommitData(sampleOutput);
-    expect(commits).toHaveLength(2);
-    expect(commits[0].files).toHaveLength(0);
-    expect(commits[1].files).toHaveLength(0);
-  });
-});
 
 describe('Git Operations', () => {
   it('should get commit stats', () => {
@@ -179,32 +131,6 @@ describe('Git Operations', () => {
     expect(typeof fileCount).toBe('object');
   });
 
-  it('should calculate velocity trends', () => {
-    const output = runGitCommand(
-      REPO,
-      'git log --since="2020-01-01" -10 --pretty=format:"%ad|%H" --date=short --numstat'
-    );
-
-    const commits = parseCommitData(output);
-    const periods: Record<string, { commits: number }> = {};
-
-    for (const commit of commits) {
-      if (!commit.date || typeof commit.date !== 'string') continue;
-      const date = new Date(commit.date);
-      if (isNaN(date.getTime())) continue;
-      
-      const weekStart = new Date(date);
-      weekStart.setDate(date.getDate() - date.getDay());
-      const periodKey = weekStart.toISOString().split('T')[0];
-
-      if (!periods[periodKey]) {
-        periods[periodKey] = { commits: 0 };
-      }
-      periods[periodKey].commits++;
-    }
-
-    expect(typeof periods).toBe('object');
-  });
 
   it('should handle date validation in velocity calculation', () => {
     const commits = [

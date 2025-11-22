@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { runGitCommand, validateDate, validateRepoPath, parseCommitData } from './git-metrics.js';
+import { runGitCommand, validateDate, validateRepoPath } from './git-metrics.js';
 import { resolve } from 'path';
 
 const REPO = resolve(process.cwd());
@@ -271,65 +271,6 @@ describe('Tool Handler Logic', () => {
     });
   });
 
-  describe('get_velocity_trends logic', () => {
-    it('should group commits by week', () => {
-      const output = runGitCommand(
-        REPO,
-        'git log --since="2020-01-01" --pretty=format:"%ad|%H" --date=short --numstat'
-      );
-      
-      const commits = parseCommitData(output);
-      const periods: Record<string, any> = {};
-
-      for (const commit of commits) {
-        if (!commit.date || typeof commit.date !== 'string') continue;
-        const date = new Date(commit.date);
-        if (isNaN(date.getTime())) continue;
-        
-        const weekStart = new Date(date);
-        weekStart.setDate(date.getDate() - date.getDay());
-        const periodKey = weekStart.toISOString().split('T')[0];
-
-        if (!periods[periodKey]) {
-          periods[periodKey] = { commits: 0, additions: 0, deletions: 0 };
-        }
-        periods[periodKey].commits++;
-      }
-
-      expect(typeof periods).toBe('object');
-    });
-
-    it('should group commits by month', () => {
-      const output = runGitCommand(
-        REPO,
-        'git log --since="2020-01-01" --pretty=format:"%ad|%H" --date=short --numstat'
-      );
-      
-      const commits = parseCommitData(output);
-      const periods: Record<string, any> = {};
-
-      for (const commit of commits) {
-        if (!commit.date || typeof commit.date !== 'string') continue;
-        const periodKey = commit.date.substring(0, 7);
-
-        if (!periods[periodKey]) {
-          periods[periodKey] = { commits: 0 };
-        }
-        periods[periodKey].commits++;
-      }
-
-      expect(typeof periods).toBe('object');
-    });
-
-    it('should handle empty results', () => {
-      const output = runGitCommand(
-        REPO,
-        'git log --since="2030-01-01" --pretty=format:"%ad|%H" --date=short --numstat'
-      );
-      
-      expect(output.trim()).toBe('');
-    });
-  });
 
   describe('get_collaboration_metrics logic', () => {
     it('should identify collaborative files', () => {
@@ -369,46 +310,6 @@ describe('Tool Handler Logic', () => {
     });
   });
 
-  describe('get_quality_metrics logic', () => {
-    it('should calculate commit sizes', () => {
-      const output = runGitCommand(
-        REPO,
-        'git log --since="2020-01-01" --pretty=format:"%ad|%H" --date=short --numstat'
-      );
-      
-      const commits = parseCommitData(output);
-      let totalSize = 0;
-      const commitSizes: number[] = [];
-
-      for (const commit of commits) {
-        const size = commit.files.reduce((sum: number, f: any) => sum + f.additions + f.deletions, 0);
-        totalSize += size;
-        commitSizes.push(size);
-      }
-
-      const avgCommitSize = commits.length > 0 ? totalSize / commits.length : 0;
-      expect(avgCommitSize).toBeGreaterThanOrEqual(0);
-    });
-
-    it('should detect reverts and fixes', () => {
-      const output = runGitCommand(
-        REPO,
-        'git log --since="2020-01-01" --pretty=format:"%s"'
-      );
-      
-      const messages = output.trim().split('\n');
-      let reverts = 0;
-      let fixes = 0;
-
-      for (const msg of messages) {
-        if (msg.toLowerCase().includes('revert')) reverts++;
-        if (msg.toLowerCase().match(/\b(fix|bug|hotfix)\b/)) fixes++;
-      }
-
-      expect(reverts).toBeGreaterThanOrEqual(0);
-      expect(fixes).toBeGreaterThanOrEqual(0);
-    });
-  });
 
   describe('get_technical_debt logic', () => {
     it('should identify stale files', () => {
