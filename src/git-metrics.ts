@@ -88,7 +88,7 @@ export function parseCommitData(output: string) {
       const author = parts[1] || "";
       const email = parts[2] || "";
       const date = parts[3] || "";
-      const message = parts[4] || "";
+      const message = parts.slice(4).join("|") || "";
       current = { hash, author, email, date, message, files: [] };
     } else if (line.match(/^\d+\s+\d+/) && current) {
       const parts = line.split(/\s+/);
