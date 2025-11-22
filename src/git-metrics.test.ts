@@ -102,10 +102,10 @@ describe('parseCommitData', () => {
   });
 
   it('should parse file changes correctly', () => {
-    const sampleOutput = `2025-11-21|abc123
+    const sampleOutput = `abc123|John Doe|john@example.com|2025-11-21|Initial commit
 1\t2\tfile1.txt
 3\t4\tfile2.txt
-2025-11-20|def456
+def456|Jane Doe|jane@example.com|2025-11-20|Fix bug
 5\t6\tfile3.txt`;
     
     const commits = parseCommitData(sampleOutput);
@@ -118,8 +118,8 @@ describe('parseCommitData', () => {
   });
 
   it('should handle commits without files', () => {
-    const sampleOutput = `2025-11-21|abc123
-2025-11-20|def456`;
+    const sampleOutput = `abc123|John Doe|john@example.com|2025-11-21|Initial commit
+def456|Jane Doe|jane@example.com|2025-11-20|Fix bug`;
     
     const commits = parseCommitData(sampleOutput);
     expect(commits).toHaveLength(2);
