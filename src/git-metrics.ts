@@ -273,9 +273,7 @@ async function main() {
   });
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch((error) => {
-    log('ERROR', 'Server startup failed', { error: error.message });
-    process.exit(1);
-  });
-}
+main().catch((error) => {
+  log('ERROR', 'Server startup failed', { error: error.message });
+  process.exit(1);
+});
