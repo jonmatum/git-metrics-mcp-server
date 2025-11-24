@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/jonmatum/git-metrics-mcp-server/compare/v2.0.0...v2.0.1) (2025-11-24)
+
+
+### Bug Fixes
+
+* remove incorrect ES module check preventing server startup ([b027a86](https://github.com/jonmatum/git-metrics-mcp-server/commit/b027a86688ee141ac8c01759476a3989a4708764))
+
 ## [2.0.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v1.2.2...v2.0.0) (2025-11-22)
 
 
