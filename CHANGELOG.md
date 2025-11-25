@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v2.0.1...v2.1.0) (2025-11-25)
+
+
+### Features
+
+* add conventional commits analysis tool ([d80b527](https://github.com/jonmatum/git-metrics-mcp-server/commit/d80b5272a2fc1c234b2e773d71060faf62bed467))
+
+
+### Bug Fixes
+
+* sync version from package.json and correct README documentation ([6491f93](https://github.com/jonmatum/git-metrics-mcp-server/commit/6491f93caf99b130c00cc9e245ba7922d13183a6))
+
 ## [2.0.1](https://github.com/jonmatum/git-metrics-mcp-server/compare/v2.0.0...v2.0.1) (2025-11-24)
 
 
