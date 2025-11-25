@@ -233,6 +233,7 @@ Files with most changes (indicates complexity or issues).
 **Parameters:**
 - `repo_path` (required): Path to git repository
 - `since` (required): Start date (YYYY-MM-DD)
+- `until` (optional): End date (YYYY-MM-DD), inclusive
 - `limit` (optional): Number of files, default 10
 
 **Returns:**
@@ -294,6 +295,7 @@ Bus factor and knowledge distribution.
 **Parameters:**
 - `repo_path` (required): Path to git repository
 - `since` (required): Start date (YYYY-MM-DD)
+- `until` (optional): End date (YYYY-MM-DD), inclusive
 
 **Returns:**
 ```json
@@ -314,6 +316,7 @@ Track velocity over time.
 **Parameters:**
 - `repo_path` (required): Path to git repository
 - `since` (required): Start date (YYYY-MM-DD)
+- `until` (optional): End date (YYYY-MM-DD), inclusive
 - `interval` (optional): "week" or "month", default "week"
 
 **Returns:**
@@ -333,6 +336,7 @@ Team interaction patterns.
 **Parameters:**
 - `repo_path` (required): Path to git repository
 - `since` (required): Start date (YYYY-MM-DD)
+- `until` (optional): End date (YYYY-MM-DD), inclusive
 
 **Returns:**
 ```json
@@ -351,6 +355,7 @@ Code quality indicators.
 **Parameters:**
 - `repo_path` (required): Path to git repository
 - `since` (required): Start date (YYYY-MM-DD)
+- `until` (optional): End date (YYYY-MM-DD), inclusive
 
 **Returns:**
 ```json
@@ -389,6 +394,7 @@ Analyze conventional commit usage and release patterns.
 **Parameters:**
 - `repo_path` (required): Path to git repository
 - `since` (required): Start date (YYYY-MM-DD)
+- `until` (optional): End date (YYYY-MM-DD), inclusive
 
 **Returns:**
 ```json

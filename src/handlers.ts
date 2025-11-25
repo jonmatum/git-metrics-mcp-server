@@ -366,12 +366,15 @@ export function handleGetTechnicalDebt(args: any) {
 }
 
 export function handleGetConventionalCommits(args: any) {
-  const { repo_path, since } = args;
+  const { repo_path, since, until } = args;
   
   validateRepoPath(repo_path);
   validateDate(since, "since");
+  if (until) validateDate(until, "until");
   
-  const cmd = `git log --since="${since}" --pretty=format:"%H|%s|%ad" --date=short`;
+  let cmd = `git log --since="${since}"`;
+  if (until) cmd += ` --until="${until} 23:59:59"`;
+  cmd += ` --pretty=format:"%H|%s|%ad" --date=short`;
   const output = runGitCommand(repo_path, cmd);
   const lines = output.trim().split("\n").filter(l => l);
   
