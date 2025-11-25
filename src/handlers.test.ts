@@ -223,4 +223,89 @@ describe('Handler Functions', () => {
       expect(result).toHaveProperty('staleFiles');
     });
   });
+
+  describe('handleGetConventionalCommits', () => {
+    let conventionalRepo: string;
+
+    beforeAll(() => {
+      conventionalRepo = join(tmpdir(), `conventional-test-${Date.now()}`);
+      mkdirSync(conventionalRepo, { recursive: true });
+      
+      execSync('git init', { cwd: conventionalRepo });
+      execSync('git config user.email "test@example.com"', { cwd: conventionalRepo });
+      execSync('git config user.name "Test User"', { cwd: conventionalRepo });
+      
+      writeFileSync(join(conventionalRepo, 'file1.txt'), 'content1\n');
+      execSync('git add .', { cwd: conventionalRepo });
+      execSync('git commit -m "feat(core): add new feature"', { cwd: conventionalRepo });
+      
+      writeFileSync(join(conventionalRepo, 'file2.txt'), 'content2\n');
+      execSync('git add .', { cwd: conventionalRepo });
+      execSync('git commit -m "fix: resolve bug"', { cwd: conventionalRepo });
+      
+      writeFileSync(join(conventionalRepo, 'file3.txt'), 'content3\n');
+      execSync('git add .', { cwd: conventionalRepo });
+      execSync('git commit -m "feat!: breaking change"', { cwd: conventionalRepo });
+      
+      execSync('git tag v1.0.0', { cwd: conventionalRepo });
+    });
+
+    it('should analyze conventional commits', () => {
+      const result = handlers.handleGetConventionalCommits({
+        repo_path: conventionalRepo,
+        since: testDate,
+      });
+      
+      expect(result).toHaveProperty('totalCommits');
+      expect(result).toHaveProperty('conventionalCommits');
+      expect(result).toHaveProperty('conventionalPercentage');
+      expect(result).toHaveProperty('commitTypes');
+      expect(result).toHaveProperty('topScopes');
+      expect(result).toHaveProperty('breakingChanges');
+      expect(result).toHaveProperty('recentReleases');
+      expect(result).toHaveProperty('releaseFrequency');
+      
+      expect(result.totalCommits).toBe(3);
+      expect(result.conventionalCommits).toBe(3);
+      expect(result.conventionalPercentage).toBe('100.0%');
+      expect(result.breakingChanges).toBe(1);
+    });
+
+    it('should identify commit types', () => {
+      const result = handlers.handleGetConventionalCommits({
+        repo_path: conventionalRepo,
+        since: testDate,
+      });
+      
+      expect(Array.isArray(result.commitTypes)).toBe(true);
+      const types = result.commitTypes.map((t: any) => t.type);
+      expect(types).toContain('feat');
+      expect(types).toContain('fix');
+    });
+
+    it('should identify scopes', () => {
+      const result = handlers.handleGetConventionalCommits({
+        repo_path: conventionalRepo,
+        since: testDate,
+      });
+      
+      expect(Array.isArray(result.topScopes)).toBe(true);
+      if (result.topScopes.length > 0) {
+        expect(result.topScopes[0]).toHaveProperty('scope');
+        expect(result.topScopes[0]).toHaveProperty('count');
+      }
+    });
+
+    it('should list releases', () => {
+      const result = handlers.handleGetConventionalCommits({
+        repo_path: conventionalRepo,
+        since: testDate,
+      });
+      
+      expect(Array.isArray(result.recentReleases)).toBe(true);
+      expect(result.recentReleases.length).toBeGreaterThan(0);
+      expect(result.recentReleases[0]).toHaveProperty('tag');
+      expect(result.recentReleases[0]).toHaveProperty('date');
+    });
+  });
 });

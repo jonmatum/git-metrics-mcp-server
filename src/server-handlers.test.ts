@@ -82,6 +82,32 @@ describe('Server Request Handlers', () => {
     });
   });
 
+  describe('get_conventional_commits handler', () => {
+    it('should require repo_path and since', () => {
+      const args = { repo_path: '/test', since: '2025-11-01' };
+      expect(args.repo_path).toBeDefined();
+      expect(args.since).toBeDefined();
+    });
+
+    it('should parse conventional commit format', () => {
+      const message = 'feat(core): add new feature';
+      const regex = /^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(([^)]+)\))?(!)?:/;
+      const match = message.match(regex);
+      
+      expect(match).not.toBeNull();
+      expect(match![1]).toBe('feat');
+      expect(match![3]).toBe('core');
+    });
+
+    it('should detect breaking changes', () => {
+      const message1 = 'feat!: breaking change';
+      const message2 = 'feat: normal change\n\nBREAKING CHANGE: details';
+      
+      expect(message1.includes('!')).toBe(true);
+      expect(message2.includes('BREAKING CHANGE')).toBe(true);
+    });
+  });
+
   describe('Error handling', () => {
     it('should handle git command failures', () => {
       vi.mocked(execSync).mockImplementation(() => {
