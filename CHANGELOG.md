@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v2.1.0...v3.0.0) (2025-11-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* Date range behavior now includes commits on the until date. This aligns with user expectations but may change result counts for existing queries that relied on the exclusive behavior.
+
+### Bug Fixes
+
+* make until parameter inclusive by appending 23:59:59 ([c84a5b5](https://github.com/jonmatum/git-metrics-mcp-server/commit/c84a5b540922a246912e6372294682dbcbdd5b54))
+
 ## [2.1.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v2.0.1...v2.1.0) (2025-11-25)
 
 
