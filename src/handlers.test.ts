@@ -103,6 +103,17 @@ describe('Handler Functions', () => {
       
       expect(result.length).toBeLessThanOrEqual(1);
     });
+
+    it('should handle until parameter', () => {
+      const result = handlers.handleGetFileChurn({
+        repo_path: testRepo,
+        since: testDate,
+        until: '2030-01-01',
+      });
+      
+      expect(Array.isArray(result)).toBe(true);
+      expect(result.length).toBeGreaterThan(0);
+    });
   });
 
   describe('handleGetTeamSummary', () => {
@@ -149,6 +160,17 @@ describe('Handler Functions', () => {
       expect(result).toHaveProperty('busFactor');
       expect(result.totalFiles).toBeGreaterThan(0);
     });
+
+    it('should handle until parameter', () => {
+      const result = handlers.handleGetCodeOwnership({
+        repo_path: testRepo,
+        since: testDate,
+        until: '2030-01-01',
+      });
+      
+      expect(result).toHaveProperty('totalFiles');
+      expect(result.totalFiles).toBeGreaterThan(0);
+    });
   });
 
   describe('handleGetVelocityTrends', () => {
@@ -173,6 +195,17 @@ describe('Handler Functions', () => {
       
       expect(result.interval).toBe('month');
     });
+
+    it('should handle until parameter', () => {
+      const result = handlers.handleGetVelocityTrends({
+        repo_path: testRepo,
+        since: testDate,
+        until: '2030-01-01',
+      });
+      
+      expect(result).toHaveProperty('trends');
+      expect(Array.isArray(result.trends)).toBe(true);
+    });
   });
 
   describe('handleGetCollaborationMetrics', () => {
@@ -185,6 +218,17 @@ describe('Handler Functions', () => {
       expect(result).toHaveProperty('collaborativeFiles');
       expect(result).toHaveProperty('topCollaborations');
       expect(Array.isArray(result.topCollaborations)).toBe(true);
+    });
+
+    it('should handle until parameter', () => {
+      const result = handlers.handleGetCollaborationMetrics({
+        repo_path: testRepo,
+        since: testDate,
+        until: '2030-01-01',
+      });
+      
+      expect(result).toHaveProperty('collaborativeFiles');
+      expect(result).toHaveProperty('topCollaborations');
     });
   });
 
@@ -199,6 +243,17 @@ describe('Handler Functions', () => {
       expect(result).toHaveProperty('medianCommitSize');
       expect(result).toHaveProperty('revertRate');
       expect(result).toHaveProperty('fixRate');
+    });
+
+    it('should handle until parameter', () => {
+      const result = handlers.handleGetQualityMetrics({
+        repo_path: testRepo,
+        since: testDate,
+        until: '2030-01-01',
+      });
+      
+      expect(result).toHaveProperty('averageCommitSize');
+      expect(result).toHaveProperty('revertRate');
     });
   });
 
