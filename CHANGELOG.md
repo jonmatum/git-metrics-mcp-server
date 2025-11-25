@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v3.0.0...v3.1.0) (2025-11-25)
+
+
+### Features
+
+* add until parameter to all date-based tools ([4fde87b](https://github.com/jonmatum/git-metrics-mcp-server/commit/4fde87b808a36dfacbd731d54fc63b16d4c9fb10))
+
 ## [3.0.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v2.1.0...v3.0.0) (2025-11-25)
 
 
