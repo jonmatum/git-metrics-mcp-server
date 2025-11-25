@@ -288,6 +288,8 @@ Analyze when people commit (burnout detection).
 }
 ```
 
+> **Note:** Hours are shown in the author's local timezone at the time of commit.
+
 ### get_code_ownership
 
 Bus factor and knowledge distribution.
