@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v3.1.0...v4.0.0) (2025-11-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* Reduces 80k+ git commands to 1 for large repos like Linux kernel
+
+### Performance Improvements
+
+* optimize for large repos by eliminating per-file git queries ([5415da6](https://github.com/jonmatum/git-metrics-mcp-server/commit/5415da6077f921d64c60ca17710e5ea3888a39df))
+
 ## [3.1.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v3.0.0...v3.1.0) (2025-11-25)
 
 
