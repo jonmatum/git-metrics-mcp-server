@@ -66,12 +66,12 @@ describe('Date Range Handling QA', () => {
     it('should handle exact date boundaries', () => {
       const result = handlers.handleGetCommitStats({
         repo_path: testRepo,
-        since: '2025-02-10',
+        since: '2025-02-09',
         until: '2025-02-10',
       });
       
-      // Should include the commit on 2025-02-10
-      expect(result.commits).toBeGreaterThanOrEqual(1);
+      // Should include the commit on 2025-02-10 (inclusive until)
+      expect(result.commits).toBe(1);
     });
 
     it('should return zero commits when range has no commits', () => {
