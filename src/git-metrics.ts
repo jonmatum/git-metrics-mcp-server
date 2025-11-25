@@ -22,8 +22,8 @@ function log(level: 'INFO' | 'ERROR' | 'WARN', message: string, meta?: any) {
   console.error(JSON.stringify(logEntry));
 }
 
-const GIT_TIMEOUT = parseInt(process.env.GIT_TIMEOUT || '30000');
-const MAX_BUFFER = 10 * 1024 * 1024;
+const GIT_TIMEOUT = parseInt(process.env.GIT_TIMEOUT || '60000');
+const MAX_BUFFER = 50 * 1024 * 1024;
 
 const server = new Server(
   {

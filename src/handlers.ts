@@ -10,20 +10,23 @@ export function handleGetCommitStats(args: any) {
   let cmd = `git log --since="${since}"`;
   if (until) cmd += ` --until="${until} 23:59:59"`;
   if (author) cmd += ` --author="${author}"`;
-  cmd += ` --pretty=format:"%H|%an|%ae|%ad|%s" --date=short --numstat`;
+  cmd += ` --pretty=format:"%H" --shortstat`;
 
   const output = runGitCommand(repo_path, cmd);
-  const lines = output.trim().split("\n").slice(0, 10000);
+  const lines = output.trim().split("\n");
   
   let commits = 0, additions = 0, deletions = 0, filesChanged = 0;
   
   for (const line of lines) {
-    if (line.includes("|")) commits++;
-    else if (line.match(/^\d+\s+\d+/)) {
-      const [add, del] = line.split(/\s+/);
-      additions += parseInt(add) || 0;
-      deletions += parseInt(del) || 0;
-      filesChanged++;
+    if (line.match(/^[0-9a-f]{40}$/)) {
+      commits++;
+    } else if (line.includes("changed")) {
+      const addMatch = line.match(/(\d+) insertion/);
+      const delMatch = line.match(/(\d+) deletion/);
+      const fileMatch = line.match(/(\d+) file/);
+      if (addMatch) additions += parseInt(addMatch[1]);
+      if (delMatch) deletions += parseInt(delMatch[1]);
+      if (fileMatch) filesChanged += parseInt(fileMatch[1]);
     }
   }
 
@@ -163,28 +166,27 @@ export function handleGetCodeOwnership(args: any) {
   validateDate(since, "since");
   if (until) validateDate(until, "until");
   
-  const filesCmd = `git ls-files`;
-  const files = runGitCommand(repo_path, filesCmd).trim().split("\n");
+  let cmd = `git log --since="${since}"`;
+  if (until) cmd += ` --until="${until} 23:59:59"`;
+  cmd += ` --pretty=format:"%an <%ae>" --name-only`;
+  
+  const output = runGitCommand(repo_path, cmd);
+  const lines = output.trim().split("\n");
   
   const fileAuthors: Record<string, Set<string>> = {};
+  let currentAuthor = "";
   
-  for (const file of files) {
-    let cmd = `git log --since="${since}"`;
-    if (until) cmd += ` --until="${until} 23:59:59"`;
-    cmd += ` --pretty=format:"%an <%ae>" -- "${file}"`;
-    try {
-      const output = runGitCommand(repo_path, cmd);
-      const authors = new Set(output.trim().split("\n").filter(a => a));
-      if (authors.size > 0) {
-        fileAuthors[file] = authors;
-      }
-    } catch {
-      // Skip files with no history
+  for (const line of lines) {
+    if (line.includes("<") && line.includes(">")) {
+      currentAuthor = line;
+    } else if (line.trim() && currentAuthor) {
+      if (!fileAuthors[line]) fileAuthors[line] = new Set();
+      fileAuthors[line].add(currentAuthor);
     }
   }
   
   const authorFiles: Record<string, number> = {};
-  for (const authors of Object.values(fileAuthors)) {
+  for (const [file, authors] of Object.entries(fileAuthors)) {
     if (authors.size === 1) {
       const author = Array.from(authors)[0];
       authorFiles[author] = (authorFiles[author] || 0) + 1;
@@ -192,7 +194,7 @@ export function handleGetCodeOwnership(args: any) {
   }
   
   return {
-    totalFiles: files.length,
+    totalFiles: Object.keys(fileAuthors).length,
     sharedFiles: Object.values(fileAuthors).filter(a => a.size > 1).length,
     soloFiles: Object.values(fileAuthors).filter(a => a.size === 1).length,
     busFactor: Object.entries(authorFiles)
@@ -246,39 +248,40 @@ export function handleGetCollaborationMetrics(args: any) {
   validateDate(since, "since");
   if (until) validateDate(until, "until");
   
-  const filesCmd = `git ls-files`;
-  const files = runGitCommand(repo_path, filesCmd).trim().split("\n").slice(0, 1000);
+  let cmd = `git log --since="${since}"`;
+  if (until) cmd += ` --until="${until} 23:59:59"`;
+  cmd += ` --pretty=format:"%an <%ae>" --name-only`;
+  
+  const output = runGitCommand(repo_path, cmd);
+  const lines = output.trim().split("\n");
   
   const fileAuthors: Record<string, Set<string>> = {};
+  let currentAuthor = "";
   
-  for (const file of files) {
-    let cmd = `git log --since="${since}"`;
-    if (until) cmd += ` --until="${until} 23:59:59"`;
-    cmd += ` --pretty=format:"%an <%ae>" -- "${file}"`;
-    try {
-      const output = runGitCommand(repo_path, cmd);
-      const authors = new Set(output.trim().split("\n").filter(a => a));
-      if (authors.size > 1) {
-        fileAuthors[file] = authors;
-      }
-    } catch {
-      // Skip
+  for (const line of lines) {
+    if (line.includes("<") && line.includes(">")) {
+      currentAuthor = line;
+    } else if (line.trim() && currentAuthor) {
+      if (!fileAuthors[line]) fileAuthors[line] = new Set();
+      fileAuthors[line].add(currentAuthor);
     }
   }
   
   const collaborations: Record<string, number> = {};
   for (const authors of Object.values(fileAuthors)) {
-    const authorList = Array.from(authors).sort();
-    for (let i = 0; i < authorList.length; i++) {
-      for (let j = i + 1; j < authorList.length; j++) {
-        const pair = `${authorList[i]} <-> ${authorList[j]}`;
-        collaborations[pair] = (collaborations[pair] || 0) + 1;
+    if (authors.size > 1) {
+      const authorList = Array.from(authors).sort();
+      for (let i = 0; i < authorList.length; i++) {
+        for (let j = i + 1; j < authorList.length; j++) {
+          const pair = `${authorList[i]} <-> ${authorList[j]}`;
+          collaborations[pair] = (collaborations[pair] || 0) + 1;
+        }
       }
     }
   }
   
   return {
-    collaborativeFiles: Object.keys(fileAuthors).length,
+    collaborativeFiles: Object.values(fileAuthors).filter(a => a.size > 1).length,
     topCollaborations: Object.entries(collaborations)
       .sort(([, a], [, b]) => b - a)
       .slice(0, 10)
@@ -334,34 +337,62 @@ export function handleGetTechnicalDebt(args: any) {
   
   validateRepoPath(repo_path);
   
-  const filesCmd = `git ls-files`;
-  const files = runGitCommand(repo_path, filesCmd).trim().split("\n").slice(0, 500);
+  const cutoffDate = new Date();
+  cutoffDate.setDate(cutoffDate.getDate() - stale_days);
+  const cutoffTimestamp = Math.floor(cutoffDate.getTime() / 1000);
   
-  const staleFiles: any[] = [];
-  const largeFiles: any[] = [];
+  const staleCmd = `git ls-files -z | xargs -0 -n1 -I{} sh -c 'echo "{}|$(git log -1 --format=%ct -- "{}")"' | awk -F'|' '$2 < ${cutoffTimestamp} {print $1"|"$2}'`;
+  const churnCmd = `git log --name-only --pretty=format: | sort | uniq -c | sort -rn | head -20`;
   
-  for (const file of files) {
-    const lastChangeCmd = `git log -1 --pretty=format:"%ar" -- "${file}"`;
-    try {
-      const lastChange = runGitCommand(repo_path, lastChangeCmd).trim();
-      const daysMatch = lastChange.match(/(\d+)\s+days?\s+ago/);
-      if (daysMatch && parseInt(daysMatch[1]) > stale_days) {
-        staleFiles.push({ file, daysSinceLastChange: parseInt(daysMatch[1]) });
-      }
-      
-      const churnCmd = `git log --oneline -- "${file}" | wc -l`;
-      const churn = parseInt(runGitCommand(repo_path, churnCmd).trim());
-      if (churn > 20) {
-        largeFiles.push({ file, churn });
-      }
-    } catch {
-      // Skip
+  let staleFiles: any[] = [];
+  try {
+    const staleOutput = runGitCommand(repo_path, staleCmd);
+    const now = Math.floor(Date.now() / 1000);
+    staleFiles = staleOutput.trim().split("\n")
+      .filter(l => l)
+      .map(line => {
+        const [file, timestamp] = line.split("|");
+        const days = Math.floor((now - parseInt(timestamp)) / 86400);
+        return { file, daysSinceLastChange: days };
+      })
+      .slice(0, 10);
+  } catch {
+    // Fallback to simpler approach
+    const filesCmd = `git ls-files | head -100`;
+    const files = runGitCommand(repo_path, filesCmd).trim().split("\n");
+    
+    for (const file of files) {
+      try {
+        const lastChangeCmd = `git log -1 --format=%ct -- "${file}"`;
+        const timestamp = parseInt(runGitCommand(repo_path, lastChangeCmd).trim());
+        const days = Math.floor((Date.now() / 1000 - timestamp) / 86400);
+        if (days > stale_days) {
+          staleFiles.push({ file, daysSinceLastChange: days });
+        }
+      } catch {}
     }
+    staleFiles = staleFiles.slice(0, 10);
   }
   
+  let complexityHotspots: any[] = [];
+  try {
+    const churnOutput = runGitCommand(repo_path, churnCmd);
+    complexityHotspots = churnOutput.trim().split("\n")
+      .filter(l => l.trim())
+      .map(line => {
+        const match = line.trim().match(/^\s*(\d+)\s+(.+)$/);
+        if (match) {
+          return { file: match[2], churn: parseInt(match[1]) };
+        }
+        return null;
+      })
+      .filter(x => x !== null)
+      .slice(0, 10);
+  } catch {}
+  
   return {
-    staleFiles: staleFiles.slice(0, 10),
-    complexityHotspots: largeFiles.sort((a, b) => b.churn - a.churn).slice(0, 10),
+    staleFiles,
+    complexityHotspots,
   };
 }
 
