@@ -18,6 +18,7 @@ This server provides tools to extract meaningful metrics from git repositories, 
 - **Collaboration Metrics**: Team interaction patterns
 - **Quality Metrics**: Commit size, reverts, and fix rates
 - **Technical Debt**: Stale files and complexity hotspots
+- **Conventional Commits**: Analyze commit types, scopes, and release frequency
 
 ### Production Features
 
@@ -376,6 +377,35 @@ Identify technical debt.
   "complexityHotspots": [
     { "file": "big-file.js", "churn": 25 }
   ]
+}
+```
+
+### get_conventional_commits
+
+Analyze conventional commit usage and release patterns.
+
+**Parameters:**
+- `repo_path` (required): Path to git repository
+- `since` (required): Start date (YYYY-MM-DD)
+
+**Returns:**
+```json
+{
+  "totalCommits": 25,
+  "conventionalCommits": 25,
+  "conventionalPercentage": "100.0%",
+  "commitTypes": [
+    { "type": "feat", "count": 5 },
+    { "type": "fix", "count": 5 }
+  ],
+  "topScopes": [
+    { "scope": "main", "count": 8 }
+  ],
+  "breakingChanges": 0,
+  "recentReleases": [
+    { "tag": "v2.0.1", "date": "2025-11-24" }
+  ],
+  "releaseFrequency": "8 releases since 2025-11-01"
 }
 ```
 

@@ -211,6 +211,18 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ["repo_path"],
       },
     },
+    {
+      name: "get_conventional_commits",
+      description: "Analyze conventional commit usage and release patterns",
+      inputSchema: {
+        type: "object",
+        properties: {
+          repo_path: { type: "string", description: "Path to git repository" },
+          since: { type: "string", description: "Start date (YYYY-MM-DD)" },
+        },
+        required: ["repo_path", "since"],
+      },
+    },
   ],
 }));
 
@@ -244,6 +256,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       result = handlers.handleGetQualityMetrics(args);
     } else if (request.params.name === "get_technical_debt") {
       result = handlers.handleGetTechnicalDebt(args);
+    } else if (request.params.name === "get_conventional_commits") {
+      result = handlers.handleGetConventionalCommits(args);
     } else {
       log('ERROR', 'Unknown tool', { tool: toolName });
       throw new Error(`Unknown tool: ${request.params.name}`);

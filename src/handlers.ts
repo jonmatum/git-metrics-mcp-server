@@ -349,3 +349,54 @@ export function handleGetTechnicalDebt(args: any) {
     complexityHotspots: largeFiles.sort((a, b) => b.churn - a.churn).slice(0, 10),
   };
 }
+
+export function handleGetConventionalCommits(args: any) {
+  const { repo_path, since } = args;
+  
+  validateRepoPath(repo_path);
+  validateDate(since, "since");
+  
+  const cmd = `git log --since="${since}" --pretty=format:"%H|%s|%ad" --date=short`;
+  const output = runGitCommand(repo_path, cmd);
+  const lines = output.trim().split("\n").filter(l => l);
+  
+  const types: Record<string, number> = {};
+  const scopes: Record<string, number> = {};
+  let breaking = 0;
+  let conventional = 0;
+  
+  const conventionalRegex = /^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(([^)]+)\))?(!)?:/;
+  
+  for (const line of lines) {
+    const [hash, message, date] = line.split("|");
+    const match = message.match(conventionalRegex);
+    
+    if (match) {
+      conventional++;
+      const [, type, , scope, isBreaking] = match;
+      types[type] = (types[type] || 0) + 1;
+      if (scope) scopes[scope] = (scopes[scope] || 0) + 1;
+      if (isBreaking || message.includes("BREAKING CHANGE")) breaking++;
+    }
+  }
+  
+  const tagsCmd = `git tag --sort=-creatordate --format="%(refname:short)|%(creatordate:short)"`;
+  const tagsOutput = runGitCommand(repo_path, tagsCmd);
+  const tags = tagsOutput.trim().split("\n").filter(t => t).slice(0, 20);
+  
+  const releases = tags.map(t => {
+    const [tag, date] = t.split("|");
+    return { tag, date };
+  });
+  
+  return {
+    totalCommits: lines.length,
+    conventionalCommits: conventional,
+    conventionalPercentage: `${((conventional / lines.length) * 100).toFixed(1)}%`,
+    commitTypes: Object.entries(types).sort(([,a], [,b]) => b - a).map(([type, count]) => ({ type, count })),
+    topScopes: Object.entries(scopes).sort(([,a], [,b]) => b - a).slice(0, 10).map(([scope, count]) => ({ scope, count })),
+    breakingChanges: breaking,
+    recentReleases: releases,
+    releaseFrequency: releases.length > 1 ? `${releases.length} releases since ${since}` : "No releases found"
+  };
+}
