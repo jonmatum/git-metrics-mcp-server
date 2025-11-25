@@ -119,6 +119,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         properties: {
           repo_path: { type: "string", description: "Path to git repository" },
           since: { type: "string", description: "Start date (YYYY-MM-DD)" },
+          until: { type: "string", description: "End date (YYYY-MM-DD), optional" },
           limit: { type: "number", description: "Number of files to return, default 10" },
         },
         required: ["repo_path", "since"],
@@ -158,6 +159,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         properties: {
           repo_path: { type: "string", description: "Path to git repository" },
           since: { type: "string", description: "Start date (YYYY-MM-DD)" },
+          until: { type: "string", description: "End date (YYYY-MM-DD), optional" },
         },
         required: ["repo_path", "since"],
       },
@@ -170,6 +172,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         properties: {
           repo_path: { type: "string", description: "Path to git repository" },
           since: { type: "string", description: "Start date (YYYY-MM-DD)" },
+          until: { type: "string", description: "End date (YYYY-MM-DD), optional" },
           interval: { type: "string", description: "week or month, default week" },
         },
         required: ["repo_path", "since"],
@@ -183,6 +186,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         properties: {
           repo_path: { type: "string", description: "Path to git repository" },
           since: { type: "string", description: "Start date (YYYY-MM-DD)" },
+          until: { type: "string", description: "End date (YYYY-MM-DD), optional" },
         },
         required: ["repo_path", "since"],
       },
@@ -195,6 +199,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         properties: {
           repo_path: { type: "string", description: "Path to git repository" },
           since: { type: "string", description: "Start date (YYYY-MM-DD)" },
+          until: { type: "string", description: "End date (YYYY-MM-DD), optional" },
         },
         required: ["repo_path", "since"],
       },

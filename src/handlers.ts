@@ -72,12 +72,15 @@ export function handleGetAuthorMetrics(args: any) {
 }
 
 export function handleGetFileChurn(args: any) {
-  const { repo_path, since, limit = 10 } = args;
+  const { repo_path, since, until, limit = 10 } = args;
   
   validateRepoPath(repo_path);
   validateDate(since, "since");
+  if (until) validateDate(until, "until");
   
-  const cmd = `git log --since="${since}" --name-only --pretty=format:`;
+  let cmd = `git log --since="${since}"`;
+  if (until) cmd += ` --until="${until} 23:59:59"`;
+  cmd += ` --name-only --pretty=format:`;
   const output = runGitCommand(repo_path, cmd);
   
   const fileChanges: Record<string, number> = {};
@@ -154,10 +157,11 @@ export function handleGetCommitPatterns(args: any) {
 }
 
 export function handleGetCodeOwnership(args: any) {
-  const { repo_path, since } = args;
+  const { repo_path, since, until } = args;
   
   validateRepoPath(repo_path);
   validateDate(since, "since");
+  if (until) validateDate(until, "until");
   
   const filesCmd = `git ls-files`;
   const files = runGitCommand(repo_path, filesCmd).trim().split("\n");
@@ -165,7 +169,9 @@ export function handleGetCodeOwnership(args: any) {
   const fileAuthors: Record<string, Set<string>> = {};
   
   for (const file of files) {
-    const cmd = `git log --since="${since}" --pretty=format:"%an <%ae>" -- "${file}"`;
+    let cmd = `git log --since="${since}"`;
+    if (until) cmd += ` --until="${until} 23:59:59"`;
+    cmd += ` --pretty=format:"%an <%ae>" -- "${file}"`;
     try {
       const output = runGitCommand(repo_path, cmd);
       const authors = new Set(output.trim().split("\n").filter(a => a));
@@ -196,13 +202,16 @@ export function handleGetCodeOwnership(args: any) {
 }
 
 export function handleGetVelocityTrends(args: any) {
-  const { repo_path, since, interval = "week" } = args;
+  const { repo_path, since, until, interval = "week" } = args;
   
   validateRepoPath(repo_path);
   validateDate(since, "since");
+  if (until) validateDate(until, "until");
   
   const format = interval === "month" ? "%Y-%m" : "%Y-%W";
-  const cmd = `git log --since="${since}" --pretty=format:"%ad|%H" --date=format:"${format}" --numstat`;
+  let cmd = `git log --since="${since}"`;
+  if (until) cmd += ` --until="${until} 23:59:59"`;
+  cmd += ` --pretty=format:"%ad|%H" --date=format:"${format}" --numstat`;
   
   const output = runGitCommand(repo_path, cmd);
   const lines = output.trim().split("\n");
@@ -231,10 +240,11 @@ export function handleGetVelocityTrends(args: any) {
 }
 
 export function handleGetCollaborationMetrics(args: any) {
-  const { repo_path, since } = args;
+  const { repo_path, since, until } = args;
   
   validateRepoPath(repo_path);
   validateDate(since, "since");
+  if (until) validateDate(until, "until");
   
   const filesCmd = `git ls-files`;
   const files = runGitCommand(repo_path, filesCmd).trim().split("\n").slice(0, 1000);
@@ -242,7 +252,9 @@ export function handleGetCollaborationMetrics(args: any) {
   const fileAuthors: Record<string, Set<string>> = {};
   
   for (const file of files) {
-    const cmd = `git log --since="${since}" --pretty=format:"%an <%ae>" -- "${file}"`;
+    let cmd = `git log --since="${since}"`;
+    if (until) cmd += ` --until="${until} 23:59:59"`;
+    cmd += ` --pretty=format:"%an <%ae>" -- "${file}"`;
     try {
       const output = runGitCommand(repo_path, cmd);
       const authors = new Set(output.trim().split("\n").filter(a => a));
@@ -275,12 +287,15 @@ export function handleGetCollaborationMetrics(args: any) {
 }
 
 export function handleGetQualityMetrics(args: any) {
-  const { repo_path, since } = args;
+  const { repo_path, since, until } = args;
   
   validateRepoPath(repo_path);
   validateDate(since, "since");
+  if (until) validateDate(until, "until");
   
-  const cmd = `git log --since="${since}" --pretty=format:"%H|%s" --numstat`;
+  let cmd = `git log --since="${since}"`;
+  if (until) cmd += ` --until="${until} 23:59:59"`;
+  cmd += ` --pretty=format:"%H|%s" --numstat`;
   const output = runGitCommand(repo_path, cmd);
   const lines = output.trim().split("\n");
   
