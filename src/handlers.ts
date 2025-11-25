@@ -8,7 +8,7 @@ export function handleGetCommitStats(args: any) {
   if (until) validateDate(until, "until");
   
   let cmd = `git log --since="${since}"`;
-  if (until) cmd += ` --until="${until}"`;
+  if (until) cmd += ` --until="${until} 23:59:59"`;
   if (author) cmd += ` --author="${author}"`;
   cmd += ` --pretty=format:"%H|%an|%ae|%ad|%s" --date=short --numstat`;
 
@@ -44,7 +44,7 @@ export function handleGetAuthorMetrics(args: any) {
   if (until) validateDate(until, "until");
   
   let cmd = `git log --since="${since}"`;
-  if (until) cmd += ` --until="${until}"`;
+  if (until) cmd += ` --until="${until} 23:59:59"`;
   cmd += ` --pretty=format:"%an <%ae>" --numstat`;
 
   const output = runGitCommand(repo_path, cmd);
@@ -121,7 +121,7 @@ export function handleGetCommitPatterns(args: any) {
   if (until) validateDate(until, "until");
   
   let cmd = `git log --since="${since}"`;
-  if (until) cmd += ` --until="${until}"`;
+  if (until) cmd += ` --until="${until} 23:59:59"`;
   cmd += ` --pretty=format:"%ad" --date=format:"%u %H"`;
 
   const output = runGitCommand(repo_path, cmd);

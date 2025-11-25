@@ -182,6 +182,8 @@ Get team summary for /home/user/project from 2025-10-01 to 2025-10-31
 
 ## Available Tools
 
+> **Note on Date Ranges**: The `until` parameter is **inclusive** - commits on the end date are included in results. For example, `since="2025-11-01" until="2025-11-30"` includes all commits from November 1st through November 30th.
+
 ### get_commit_stats
 
 Get overall commit statistics for a time period.
@@ -189,7 +191,7 @@ Get overall commit statistics for a time period.
 **Parameters:**
 - `repo_path` (required): Path to git repository
 - `since` (required): Start date (YYYY-MM-DD)
-- `until` (optional): End date (YYYY-MM-DD)
+- `until` (optional): End date (YYYY-MM-DD), inclusive
 - `author` (optional): Filter by author
 
 **Returns:**
