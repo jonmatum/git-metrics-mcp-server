@@ -373,10 +373,9 @@ Identify technical debt.
   "staleFiles": [
     { "file": "old-module.js", "daysSinceLastChange": 180 }
   ],
-  "largeFiles": [
-    { "file": "big-file.js", "sizeBytes": 50000, "churn": 25 }
-  ],
-  "complexityHotspots": [ ... ]
+  "complexityHotspots": [
+    { "file": "big-file.js", "churn": 25 }
+  ]
 }
 ```
 

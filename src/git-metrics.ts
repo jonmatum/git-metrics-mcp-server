@@ -6,9 +6,15 @@ import {
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import { execSync } from "child_process";
-import { existsSync, statSync } from "fs";
-import { resolve } from "path";
+import { existsSync, statSync, readFileSync } from "fs";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
 import * as handlers from "./handlers.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const packageJson = JSON.parse(readFileSync(resolve(__dirname, '../package.json'), 'utf-8'));
+const VERSION = packageJson.version;
 
 function log(level: 'INFO' | 'ERROR' | 'WARN', message: string, meta?: any) {
   const timestamp = new Date().toISOString();
@@ -22,7 +28,7 @@ const MAX_BUFFER = 10 * 1024 * 1024;
 const server = new Server(
   {
     name: "git-metrics-mcp-server",
-    version: "1.1.0",
+    version: VERSION,
   },
   {
     capabilities: {
@@ -267,7 +273,7 @@ async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
   log('INFO', 'Git Metrics MCP Server started', { 
-    version: '1.1.0',
+    version: VERSION,
     timeout: GIT_TIMEOUT,
     maxBuffer: MAX_BUFFER
   });
