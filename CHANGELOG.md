@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.4.1](https://github.com/jonmatum/git-metrics-mcp-server/compare/v4.4.0...v4.4.1) (2025-11-26)
+
+
+### Bug Fixes
+
+* lower coverage thresholds for CI environment compatibility ([25484ea](https://github.com/jonmatum/git-metrics-mcp-server/commit/25484eac652c1f29090a7d7a9374386b681d1f99))
+
 ## [4.4.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v4.3.1...v4.4.0) (2025-11-26)
 
 
