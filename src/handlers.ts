@@ -382,7 +382,7 @@ export function handleGetTechnicalDebt(args: any) {
       .map(line => {
         const match = line.trim().match(/^\s*(\d+)\s+(.+)$/);
         if (match) {
-          return { file: match[2], churn: parseInt(match[1]) };
+          return { file: match[2], changes: parseInt(match[1]) };
         }
         return null;
       })
@@ -390,9 +390,54 @@ export function handleGetTechnicalDebt(args: any) {
       .slice(0, 10);
   } catch {}
   
+  // Get large files (>500 lines)
+  let largeFiles: any[] = [];
+  try {
+    const filesCmd = `git ls-files`;
+    const files = runGitCommand(repo_path, filesCmd).trim().split("\n").filter(f => f);
+    
+    for (const file of files.slice(0, 100)) {
+      try {
+        const linesCmd = `wc -l "${file}"`;
+        const output = runGitCommand(repo_path, linesCmd).trim();
+        const lines = parseInt(output.split(/\s+/)[0]);
+        if (lines > 500) {
+          largeFiles.push({ file, lines });
+        }
+      } catch {}
+    }
+    largeFiles = largeFiles.sort((a, b) => b.lines - a.lines).slice(0, 10);
+  } catch {}
+  
+  // Calculate average file age
+  let averageFileAge = null;
+  try {
+    const filesCmd = `git ls-files`;
+    const files = runGitCommand(repo_path, filesCmd).trim().split("\n").filter(f => f);
+    const now = Math.floor(Date.now() / 1000);
+    let totalAge = 0;
+    let count = 0;
+    
+    for (const file of files.slice(0, 100)) {
+      try {
+        const lastChangeCmd = `git log -1 --format=%ct -- "${file}"`;
+        const timestamp = parseInt(runGitCommand(repo_path, lastChangeCmd).trim());
+        const days = Math.floor((now - timestamp) / 86400);
+        totalAge += days;
+        count++;
+      } catch {}
+    }
+    
+    if (count > 0) {
+      averageFileAge = Math.round(totalAge / count);
+    }
+  } catch {}
+  
   return {
     staleFiles,
+    largeFiles,
     complexityHotspots,
+    averageFileAge,
   };
 }
 
