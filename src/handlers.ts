@@ -445,12 +445,15 @@ export function handleGetConventionalCommits(args: any) {
       return releaseDate >= sinceDate && releaseDate <= untilDate;
     });
   
+  const sortedScopes = Object.entries(scopes).sort(([,a], [,b]) => b - a);
+  
   return {
     totalCommits: lines.length,
     conventionalCommits: conventional,
     conventionalPercentage: `${((conventional / lines.length) * 100).toFixed(1)}%`,
     commitTypes: Object.entries(types).sort(([,a], [,b]) => b - a).map(([type, count]) => ({ type, count })),
-    topScopes: Object.entries(scopes).sort(([,a], [,b]) => b - a).slice(0, 10).map(([scope, count]) => ({ scope, count })),
+    topScopes: sortedScopes.slice(0, 10).map(([scope, count]) => ({ scope, count })),
+    totalScopeCount: sortedScopes.length,
     breakingChanges: breaking,
     recentReleases: releases,
     totalReleasesCount: releases.length,
