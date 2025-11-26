@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.1](https://github.com/jonmatum/git-metrics-mcp-server/compare/v4.0.0...v4.0.1) (2025-11-26)
+
+
+### Bug Fixes
+
+* **conventional-commits:** filter releases by date range ([592d38a](https://github.com/jonmatum/git-metrics-mcp-server/commit/592d38a09df0278274a49c8ad9d8c5a76f1cb0a3))
+
 ## [4.0.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v3.1.0...v4.0.0) (2025-11-25)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@jonmatum/git-metrics-mcp-server",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "MCP server for analyzing git repository metrics and team performance KPIs",
   "main": "./build/git-metrics.js",
   "type": "module",
