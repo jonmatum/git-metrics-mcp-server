@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.4.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v4.3.1...v4.4.0) (2025-11-26)
+
+
+### Features
+
+* add production-ready features and 80%+ test coverage ([21d64e2](https://github.com/jonmatum/git-metrics-mcp-server/commit/21d64e2a136641899088f768a801809e782cbd3e))
+
 ## [4.3.1](https://github.com/jonmatum/git-metrics-mcp-server/compare/v4.3.0...v4.3.1) (2025-11-26)
 
 
