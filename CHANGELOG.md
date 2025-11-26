@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.3.1](https://github.com/jonmatum/git-metrics-mcp-server/compare/v4.3.0...v4.3.1) (2025-11-26)
+
+
+### Bug Fixes
+
+* **technical-debt:** sort stale files by age (oldest first) ([d3cc96e](https://github.com/jonmatum/git-metrics-mcp-server/commit/d3cc96e1a75e8608de627a305af18d440c19e1e7))
+
 ## [4.3.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v4.2.0...v4.3.0) (2025-11-26)
 
 
