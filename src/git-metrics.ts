@@ -85,6 +85,14 @@ export function validateRepoPath(repoPath: string): void {
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
   tools: [
     {
+      name: "health_check",
+      description: "Verify server is operational",
+      inputSchema: {
+        type: "object",
+        properties: {},
+      },
+    },
+    {
       name: "get_commit_stats",
       description: "Get commit statistics for a repository",
       inputSchema: {
@@ -242,7 +250,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const args = request.params.arguments as any;
     let result: any;
 
-    if (request.params.name === "get_commit_stats") {
+    if (request.params.name === "health_check") {
+      result = { status: "ok", version: VERSION, timestamp: new Date().toISOString() };
+    } else if (request.params.name === "get_commit_stats") {
       result = handlers.handleGetCommitStats(args);
     } else if (request.params.name === "get_author_metrics") {
       result = handlers.handleGetAuthorMetrics(args);
@@ -296,6 +306,19 @@ async function main() {
     version: VERSION,
     timeout: GIT_TIMEOUT,
     maxBuffer: MAX_BUFFER
+  });
+
+  // Graceful shutdown
+  process.on('SIGTERM', async () => {
+    log('INFO', 'Shutting down gracefully');
+    await server.close();
+    process.exit(0);
+  });
+
+  process.on('SIGINT', async () => {
+    log('INFO', 'Shutting down gracefully');
+    await server.close();
+    process.exit(0);
   });
 }
 
