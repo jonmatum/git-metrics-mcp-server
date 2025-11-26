@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v4.1.0...v4.2.0) (2025-11-26)
+
+
+### Features
+
+* **conventional-commits:** add total scope count to output ([c4b46f1](https://github.com/jonmatum/git-metrics-mcp-server/commit/c4b46f1c1b412127479b071f3455995d67cd6ed7))
+
 ## [4.1.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v4.0.1...v4.1.0) (2025-11-26)
 
 
