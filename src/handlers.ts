@@ -355,6 +355,7 @@ export function handleGetTechnicalDebt(args: any) {
         const days = Math.floor((now - parseInt(timestamp)) / 86400);
         return { file, daysSinceLastChange: days };
       })
+      .sort((a, b) => b.daysSinceLastChange - a.daysSinceLastChange)
       .slice(0, 10);
   } catch {
     // Fallback to simpler approach
@@ -371,7 +372,7 @@ export function handleGetTechnicalDebt(args: any) {
         }
       } catch {}
     }
-    staleFiles = staleFiles.slice(0, 10);
+    staleFiles = staleFiles.sort((a, b) => b.daysSinceLastChange - a.daysSinceLastChange).slice(0, 10);
   }
   
   let complexityHotspots: any[] = [];
