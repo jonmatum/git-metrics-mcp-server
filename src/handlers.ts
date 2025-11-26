@@ -443,8 +443,7 @@ export function handleGetConventionalCommits(args: any) {
       const sinceDate = new Date(since);
       const untilDate = until ? new Date(until) : new Date();
       return releaseDate >= sinceDate && releaseDate <= untilDate;
-    })
-    .slice(0, 20);
+    });
   
   return {
     totalCommits: lines.length,
@@ -454,6 +453,7 @@ export function handleGetConventionalCommits(args: any) {
     topScopes: Object.entries(scopes).sort(([,a], [,b]) => b - a).slice(0, 10).map(([scope, count]) => ({ scope, count })),
     breakingChanges: breaking,
     recentReleases: releases,
+    totalReleasesCount: releases.length,
     releaseFrequency: releases.length > 1 ? `${releases.length} releases since ${since}` : "No releases found"
   };
 }
