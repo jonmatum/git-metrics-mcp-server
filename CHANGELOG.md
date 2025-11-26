@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.3.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v4.2.0...v4.3.0) (2025-11-26)
+
+
+### Features
+
+* **technical-debt:** add large files and average file age metrics ([38df1f7](https://github.com/jonmatum/git-metrics-mcp-server/commit/38df1f7aaa650befc466c39e7a3137ef0401c65a))
+
 ## [4.2.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v4.1.0...v4.2.0) (2025-11-26)
 
 
