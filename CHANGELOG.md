@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v4.0.1...v4.1.0) (2025-11-26)
+
+
+### Features
+
+* **conventional-commits:** add totalReleasesCount and remove release limit ([0c08bd3](https://github.com/jonmatum/git-metrics-mcp-server/commit/0c08bd350dfad815f95c5f445ee047f271a1d2ef))
+
 ## [4.0.1](https://github.com/jonmatum/git-metrics-mcp-server/compare/v4.0.0...v4.0.1) (2025-11-26)
 
 
