@@ -362,5 +362,34 @@ describe('Handler Functions', () => {
       expect(result.recentReleases[0]).toHaveProperty('tag');
       expect(result.recentReleases[0]).toHaveProperty('date');
     });
+
+    it('should filter releases by date range', () => {
+      // Create a tag in the past (before testDate)
+      const pastDate = new Date(testDate);
+      pastDate.setFullYear(pastDate.getFullYear() - 2);
+      const pastDateStr = pastDate.toISOString().split('T')[0];
+      
+      // Get current tags
+      const beforeResult = handlers.handleGetConventionalCommits({
+        repo_path: conventionalRepo,
+        since: testDate,
+      });
+      
+      // Query with a future date range that shouldn't include current tags
+      const futureDate = new Date();
+      futureDate.setFullYear(futureDate.getFullYear() + 1);
+      const futureDateStr = futureDate.toISOString().split('T')[0];
+      
+      const futureResult = handlers.handleGetConventionalCommits({
+        repo_path: conventionalRepo,
+        since: futureDateStr,
+      });
+      
+      // Should have releases in current date range
+      expect(beforeResult.recentReleases.length).toBeGreaterThan(0);
+      
+      // Should have no releases in future date range
+      expect(futureResult.recentReleases.length).toBe(0);
+    });
   });
 });

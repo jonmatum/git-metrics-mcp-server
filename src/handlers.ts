@@ -431,12 +431,20 @@ export function handleGetConventionalCommits(args: any) {
   
   const tagsCmd = `git tag --sort=-creatordate --format="%(refname:short)|%(creatordate:short)"`;
   const tagsOutput = runGitCommand(repo_path, tagsCmd);
-  const tags = tagsOutput.trim().split("\n").filter(t => t).slice(0, 20);
+  const tags = tagsOutput.trim().split("\n").filter(t => t);
   
-  const releases = tags.map(t => {
-    const [tag, date] = t.split("|");
-    return { tag, date };
-  });
+  const releases = tags
+    .map(t => {
+      const [tag, date] = t.split("|");
+      return { tag, date };
+    })
+    .filter(r => {
+      const releaseDate = new Date(r.date);
+      const sinceDate = new Date(since);
+      const untilDate = until ? new Date(until) : new Date();
+      return releaseDate >= sinceDate && releaseDate <= untilDate;
+    })
+    .slice(0, 20);
   
   return {
     totalCommits: lines.length,
