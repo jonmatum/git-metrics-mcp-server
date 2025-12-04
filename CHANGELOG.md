@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.1](https://github.com/jonmatum/git-metrics-mcp-server/compare/v5.0.0...v5.0.1) (2025-12-04)
+
+
+### Bug Fixes
+
+* resolve linting errors in test file ([8aefd5b](https://github.com/jonmatum/git-metrics-mcp-server/commit/8aefd5bbbf7e98d1bc72100a8df221d63c75049f))
+
 ## [5.0.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v4.4.1...v5.0.0) (2025-12-04)
 
 
