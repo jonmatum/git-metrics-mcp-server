@@ -6,7 +6,7 @@ MCP server for analyzing git repository metrics and understanding team health. B
 
 This server provides tools to extract meaningful metrics from git repositories, helping teams understand their development patterns, identify risks early, and have better conversations about code quality and team health.
 
-**This is a mirror, not a microscope.** Use it to reflect on team health and process quality, not to surveil individual behavior. See [INTENT.md](INTENT.md) for our philosophy on responsible metrics usage.
+**This is a mirror, not a microscope.** Use it to reflect on team health and process quality, not to surveil individual behavior.
 
 ## Features
 
@@ -424,8 +424,6 @@ Show their velocity trend over the first 3 months
 - ❌ Comparing developers against each other
 - ❌ Performance review ammunition
 - ❌ Daily productivity tracking
-
-**See [INTENT.md](INTENT.md) for our philosophy on responsible metrics usage.**
 
 ## Team Health Indicators You Can Track
 
