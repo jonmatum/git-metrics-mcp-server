@@ -1,7 +1,7 @@
 {
   "name": "@jonmatum/git-metrics-mcp-server",
   "version": "4.4.1",
-  "description": "MCP server for analyzing git repository metrics and team performance KPIs",
+  "description": "MCP server for analyzing git repository metrics and understanding team health",
   "main": "./build/git-metrics.js",
   "type": "module",
   "bin": {
@@ -15,24 +15,27 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "prepublishOnly": "npm run build"
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "prepublishOnly": "npm run lint && npm run test && npm run build"
   },
   "files": [
     "build/",
-    "package.json",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "keywords": [
     "mcp",
     "git",
     "metrics",
-    "kpi",
-    "team-performance",
+    "team-health",
+    "collaboration",
     "kiro-cli",
     "amazon-q",
-    "developer-productivity",
-    "code-analytics"
+    "code-quality",
+    "bus-factor",
+    "technical-debt"
   ],
   "author": "Jonatan Mata <jonmatum@gmail.com>",
   "license": "MIT",
@@ -52,7 +55,10 @@
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
+    "@typescript-eslint/eslint-plugin": "^8.48.1",
+    "@typescript-eslint/parser": "^8.48.1",
     "@vitest/coverage-v8": "^4.0.13",
+    "eslint": "^9.39.1",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "vitest": "^4.0.13"

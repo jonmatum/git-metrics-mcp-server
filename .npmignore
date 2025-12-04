@@ -1,8 +1,29 @@
+# Source files
 src/
+*.test.ts
+
+# Build config
+tsconfig.json
+vitest.config.ts
+
+# Development
 node_modules/
+coverage/
+.vscode/
+.idea/
+
+# Git
 .git/
 .gitignore
-tsconfig.json
+.github/
+
+# Docs (use GitHub Pages)
+docs/
+mkdocs.yml
+site/
+
+# Misc
 *.log
 .DS_Store
 .env
+.npmignore

@@ -181,7 +181,6 @@ describe('Tool Handler Logic', () => {
         byHour[hour] = (byHour[hour] || 0) + 1;
       }
 
-      const dayNames = { '1': 'Mon', '2': 'Tue', '3': 'Wed', '4': 'Thu', '5': 'Fri', '6': 'Sat', '7': 'Sun' };
       const weekdayCommits = byDay['1'] + byDay['2'] + byDay['3'] + byDay['4'] + byDay['5'];
       const weekendCommits = byDay['6'] + byDay['7'];
 
@@ -327,7 +326,7 @@ describe('Tool Handler Logic', () => {
               staleFiles.push({ file, daysSinceLastChange: daysSince });
             }
           }
-        } catch (e) {
+        } catch {
           // Skip files that cause errors
         }
       }
