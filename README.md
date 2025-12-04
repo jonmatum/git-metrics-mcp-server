@@ -95,92 +95,18 @@ Start Kiro CLI:
 kiro-cli chat
 ```
 
-Then ask natural language questions about your repositories:
+Then ask natural language questions:
 
-### Basic Metrics
-
-**Get overall stats:**
 ```
 Get commit stats for /home/user/myproject since 2025-11-01
+Show me team summary and velocity trends for the last 2 weeks
+What's our bus factor? Who are single points of failure?
+Show me commit patterns - are people committing late at night?
+What files have the most churn since October?
+Identify technical debt and complexity hotspots
 ```
 
-**Team breakdown:**
-```
-Show me author metrics for this repo since last month
-```
-
-**Find problematic files:**
-```
-What files have the most churn in /home/user/myproject since October?
-```
-
-### Team Performance
-
-**Sprint retrospective:**
-```
-Generate a team summary for /home/user/project since 2025-11-01
-```
-
-**Individual performance:**
-```
-Get commit stats for /home/user/project since 2025-11-01 for author john@example.com
-```
-
-**Velocity tracking:**
-```
-Show me velocity trends by week for this repo since November
-```
-
-### Code Quality & Health
-
-**Burnout detection:**
-```
-Show me commit patterns for /home/user/project since last month
-Are people committing late at night or on weekends?
-```
-
-**Quality indicators:**
-```
-What are the quality metrics for this repo since last sprint?
-How many reverts and fixes do we have?
-```
-
-**Technical debt:**
-```
-Identify technical debt in /home/user/project
-Show me stale files and complexity hotspots
-```
-
-### Team Collaboration
-
-**Bus factor analysis:**
-```
-What's our bus factor for /home/user/project?
-Who owns critical code areas?
-```
-
-**Collaboration patterns:**
-```
-Show me collaboration metrics for this repo
-Who works together most often?
-```
-
-### Advanced Queries
-
-**Compare time periods:**
-```
-Compare velocity trends for this repo: last month vs this month
-```
-
-**Multi-metric analysis:**
-```
-Analyze /home/user/project: show me quality metrics, technical debt, and bus factor
-```
-
-**Custom date ranges:**
-```
-Get team summary for /home/user/project from 2025-10-01 to 2025-10-31
-```
+For comprehensive analysis, see the [Analysis Prompt](docs/git-metrics-analysis-prompt.md).
 
 ## Available Tools
 
