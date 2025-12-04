@@ -1,5 +1,26 @@
 # Changelog
 
+## [5.0.0](https://github.com/jonmatum/git-metrics-mcp-server/compare/v4.4.1...v5.0.0) (2025-12-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* git-metrics-analysis-prompt.md moved to docs/ directory
+
+### Features
+
+* **docs:** enhance MkDocs with dark mode, search, and feedback features ([31bfdfc](https://github.com/jonmatum/git-metrics-mcp-server/commit/31bfdfc9760fd4179972fe2abd59c24cbebb735b))
+
+
+### Bug Fixes
+
+* **security:** update MCP SDK to address DNS rebinding vulnerability ([df619e2](https://github.com/jonmatum/git-metrics-mcp-server/commit/df619e2da1a5a13c8c531132f6826d5ead95dc5e))
+
+
+### Documentation
+
+* add MkDocs documentation site and align with team health philosophy ([9178e69](https://github.com/jonmatum/git-metrics-mcp-server/commit/9178e69545e1af98d19e5bc633bd801eb33503e1))
+
 ## [4.4.1](https://github.com/jonmatum/git-metrics-mcp-server/compare/v4.4.0...v4.4.1) (2025-11-26)
 
 
