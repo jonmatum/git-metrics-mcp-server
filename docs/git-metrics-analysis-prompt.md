@@ -67,6 +67,7 @@ Save the report as custom-report-name.md
 ## MCP Server Requirements
 
 Ensure the git-metrics MCP server is configured in your Kiro CLI setup with these capabilities:
+
 - get_team_summary
 - get_code_ownership
 - get_velocity_trends
