@@ -1,7 +1,7 @@
 {
   "name": "@jonmatum/git-metrics-mcp-server",
   "version": "4.3.1",
-  "description": "MCP server for analyzing git repository metrics and team performance KPIs",
+  "description": "MCP server for analyzing git repository metrics and understanding team health",
   "main": "./build/git-metrics.js",
   "type": "module",
   "bin": {
@@ -19,20 +19,21 @@
   },
   "files": [
     "build/",
-    "package.json",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "keywords": [
     "mcp",
     "git",
     "metrics",
-    "kpi",
-    "team-performance",
+    "team-health",
+    "collaboration",
     "kiro-cli",
     "amazon-q",
-    "developer-productivity",
-    "code-analytics"
+    "code-quality",
+    "bus-factor",
+    "technical-debt"
   ],
   "author": "Jonatan Mata <jonmatum@gmail.com>",
   "license": "MIT",

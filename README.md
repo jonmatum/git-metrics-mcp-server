@@ -1,10 +1,12 @@
 # Git Metrics MCP Server
 
-MCP server for analyzing git repository metrics and tracking team performance KPIs. Built for Kiro CLI (Amazon Q CLI) and other MCP clients.
+MCP server for analyzing git repository metrics and understanding team health. Built for Kiro CLI (Amazon Q CLI) and other MCP clients.
 
 ## Overview
 
-This server provides tools to extract meaningful metrics from git repositories, helping teams track productivity, code quality, and collaboration patterns.
+This server provides tools to extract meaningful metrics from git repositories, helping teams understand their development patterns, identify risks early, and have better conversations about code quality and team health.
+
+**This is a mirror, not a microscope.** Use it to reflect on team health and process quality, not to surveil individual behavior. See [INTENT.md](INTENT.md) for our philosophy on responsible metrics usage.
 
 ## Features
 
@@ -419,60 +421,143 @@ Analyze conventional commit usage and release patterns.
 }
 ```
 
+## Real-World Use Case: Team Health Analysis
+
+Here's how a real engineering team used this tool to understand their development patterns across 5 repositories with 83 contributors:
+
+### The Challenge
+A team needed to understand their development health across multiple repositories without manually parsing git logs. They wanted to identify risks, improve collaboration, and ensure sustainable work practices.
+
+### What They Discovered
+
+**Team Health Insights:**
+- ✅ Excellent work-life balance: Only 1.3% weekend commits
+- ✅ Strong release discipline: 114 releases with 86.3% conventional commit adoption
+- ⚠️ Bus factor risk: Two developers owned 61% of exclusive files in one repo
+- ⚠️ High fix rate (36.3%) indicated reactive development in one project
+
+**Collaboration Patterns:**
+- Best practice: One repo had 88.9% shared files (excellent knowledge distribution)
+- Needs improvement: Another repo had only 30.5% shared files
+- Identified top collaboration pairs for knowledge sharing
+
+**Code Quality Indicators:**
+- Found complexity hotspots: Files with 66+ changes needing refactoring
+- Identified technical debt: Stale files and high-churn areas
+- Discovered optimal commit patterns: Median 17 lines (focused commits)
+
+### Actions Taken
+1. **Immediate:** Scheduled knowledge transfer sessions for high bus factor areas
+2. **Process:** Implemented pair programming to increase file sharing
+3. **Quality:** Added pre-commit hooks to reduce fix rate
+4. **Culture:** Replicated best practices from high-performing repos
+
+**Time Saved:** What would have taken days of manual analysis was completed in minutes with natural language queries.
+
+**Read the full analysis:** [team-activity-analysis.md](team-activity-analysis.md)
+
+---
+
 ## Use Cases
 
-### Sprint Retrospectives
+### ✅ Good Use Cases
+
+**Sprint Retrospectives**
 ```
 Show me team summary and velocity trends for the last 2 weeks
 What's our commit pattern? Are we burning out?
 ```
 
-### Performance Reviews
+**Risk Management**
 ```
-Get author metrics for john@example.com since last quarter
-Compare their velocity to team average
+What's our bus factor? Who are single points of failure?
+Show me code ownership - where do we have knowledge concentration?
 ```
 
-### Code Quality Reviews
+**Code Quality Reviews**
 ```
 Show me quality metrics and technical debt
 What files have high churn and need refactoring?
 ```
 
-### Team Health Checks
+**Team Health Checks**
 ```
-What's our bus factor? Who are single points of failure?
+Are people committing late at night or on weekends?
 Show me collaboration metrics - is the team working together?
 ```
 
-### Onboarding Tracking
+**Onboarding Support**
 ```
 Get commit stats for new-dev@example.com since their start date
 Show their velocity trend over the first 3 months
 ```
 
-## KPIs You Can Track
+### ❌ What This Is NOT For
 
-- **Velocity**: Commits per developer per week/sprint
-- **Code Volume**: Lines added/deleted
-- **Activity**: Files changed
+- ❌ Micromanagement or surveillance
+- ❌ Comparing developers against each other
+- ❌ Performance review ammunition
+- ❌ Daily productivity tracking
+
+**See [INTENT.md](INTENT.md) for our philosophy on responsible metrics usage.**
+
+## Team Health Indicators You Can Track
+
+### Risk Management
+- **Bus Factor**: Knowledge concentration risk - who are single points of failure?
+- **Code Ownership**: File sharing patterns - is knowledge distributed?
+- **Technical Debt**: Stale files, complexity hotspots needing attention
+
+### Team Well-being
+- **Burnout Indicators**: Weekend/late-night commits - is the team overworked?
+- **Work Patterns**: When people commit - are boundaries healthy?
+- **Velocity Trends**: Sustainable pace or sprint-and-crash cycles?
+
+### Code Quality
 - **Churn**: Files changed repeatedly (quality indicator)
-- **Contribution Balance**: Even distribution across team
-- **Commit Frequency**: Daily/weekly patterns
-- **Burnout Indicators**: Weekend/late-night commits
-- **Bus Factor**: Knowledge concentration risk
-- **Collaboration**: Team interaction frequency
-- **Quality**: Commit size, revert rate, fix rate
-- **Technical Debt**: Stale files, large files, complexity
+- **Commit Size**: Focused commits vs. large dumps
+- **Revert Rate**: How often do we undo work?
+- **Fix Rate**: Reactive (high fixes) vs. proactive development
 
-## Tips for Best Results
+### Collaboration Health
+- **File Sharing**: How much code is touched by multiple people?
+- **Collaboration Pairs**: Who works together most often?
+- **Contribution Balance**: Even distribution or bottlenecks?
+
+### Process Maturity
+- **Conventional Commits**: Adoption rate of commit standards
+- **Release Frequency**: How often do we ship?
+- **Breaking Changes**: How disruptive are our releases?
+
+## Tips for Responsible Usage
+
+### How to Use This Tool Well
 
 1. **Use natural language**: Kiro understands context, so ask questions naturally
-2. **Combine metrics**: Ask for multiple analyses in one query
-3. **Compare periods**: Track trends over time
-4. **Be specific with dates**: Use "since 2025-11-01" or "last month"
-5. **Filter by author**: Focus on individual or team performance
-6. **Regular reviews**: Run weekly/monthly to track trends
+2. **Focus on trends, not snapshots**: Weekly/monthly patterns matter more than daily counts
+3. **Combine metrics**: Ask for multiple analyses to get the full picture
+4. **Start conversations, don't end them**: Use data to ask "why?" not to judge
+5. **Look for patterns**: Team health indicators, not individual performance scores
+6. **Regular reviews**: Weekly health checks (5 min), sprint retrospectives (15 min), monthly trends (30 min)
+
+### Red Flags (Don't Do This)
+
+- ❌ Checking metrics more than once per day
+- ❌ Creating leaderboards or rankings
+- ❌ Setting commit quotas or targets
+- ❌ Using metrics in performance reviews without context
+- ❌ Comparing developers directly
+
+### Green Flags (Good Usage)
+
+- ✅ You check trends weekly/monthly, not daily
+- ✅ You ask "what does this tell us about our process?"
+- ✅ You use it to start conversations, not end them
+- ✅ You focus on team health, not individual performance
+- ✅ You look for patterns, not outliers
+- ✅ You use it to help, not judge
+
+**Remember:** The best teams are built on trust, not metrics. Use this tool to support your team, not surveil them.
 
 ## Development
 
