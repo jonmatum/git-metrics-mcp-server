@@ -7,11 +7,42 @@ repo_name: jonmatum/git-metrics-mcp-server
 theme:
   name: material
   palette:
-    primary: indigo
-    accent: indigo
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: black
+      accent: cyan
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: cyan
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+  font:
+    text: Roboto
+    code: Roboto Mono
   features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
     - navigation.instant
     - navigation.tracking
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - toc.follow
     - toc.integrate
 
 nav:
@@ -19,8 +50,36 @@ nav:
   - Philosophy: intent.md
   - Analysis Prompt: git-metrics-analysis-prompt.md
 
+plugins:
+  - search:
+      lang: en
+  - tags
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/jonmatum/git-metrics-mcp-server
+  analytics:
+    feedback:
+      title: Was this page helpful?
+      ratings:
+        - icon: material/thumb-up-outline
+          name: This page was helpful
+          data: 1
+          note: Thanks for your feedback!
+        - icon: material/thumb-down-outline
+          name: This page could be improved
+          data: 0
+          note: Thanks for your feedback!
+
 markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
   - admonition
-  - codehilite
+  - pymdownx.details
+  - tables
   - toc:
       permalink: true
