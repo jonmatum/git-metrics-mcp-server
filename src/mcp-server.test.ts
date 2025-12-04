@@ -131,7 +131,7 @@ describe('MCP Server Tool Handlers', () => {
   });
 
   it('should log tool execution', () => {
-    const log = (level: string, message: string, meta?: any) => {
+    const log = (level: string, message: string, _meta?: any) => {
       expect(level).toBeDefined();
       expect(message).toBeDefined();
     };
@@ -140,7 +140,7 @@ describe('MCP Server Tool Handlers', () => {
   });
 
   it('should log errors', () => {
-    const log = (level: string, message: string, meta?: any) => {
+    const log = (level: string, message: string, _meta?: any) => {
       expect(level).toBe('ERROR');
       expect(message).toBeDefined();
     };
