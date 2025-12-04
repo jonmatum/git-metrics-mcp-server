@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { execSync } from 'child_process';
-import { mkdirSync, writeFileSync, rmSync } from 'fs';
+import { mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
 import * as handlers from './handlers.js';
@@ -367,7 +367,6 @@ describe('Handler Functions', () => {
       // Create a tag in the past (before testDate)
       const pastDate = new Date(testDate);
       pastDate.setFullYear(pastDate.getFullYear() - 2);
-      const pastDateStr = pastDate.toISOString().split('T')[0];
       
       // Get current tags
       const beforeResult = handlers.handleGetConventionalCommits({

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseCommitData, validateDate, validateRepoPath } from './git-metrics.js';
+import { validateDate, validateRepoPath } from './git-metrics.js';
 
 describe('Edge Cases', () => {
 

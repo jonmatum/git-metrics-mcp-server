@@ -186,7 +186,7 @@ export function handleGetCodeOwnership(args: any) {
   }
   
   const authorFiles: Record<string, number> = {};
-  for (const [file, authors] of Object.entries(fileAuthors)) {
+  for (const [, authors] of Object.entries(fileAuthors)) {
     if (authors.size === 1) {
       const author = Array.from(authors)[0];
       authorFiles[author] = (authorFiles[author] || 0) + 1;
@@ -463,7 +463,7 @@ export function handleGetConventionalCommits(args: any) {
   const conventionalRegex = /^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(([^)]+)\))?(!)?:/;
   
   for (const line of lines) {
-    const [hash, message, date] = line.split("|");
+    const [, message] = line.split("|");
     const match = message.match(conventionalRegex);
     
     if (match) {
